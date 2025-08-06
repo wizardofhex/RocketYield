@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RocketYield - rETH Yield Farming Analytics Dashboard</title>
+    <title>RocketYield - rETH Dashboard</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
         * {
@@ -13,11 +13,10 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #FF6B35 0%, #1A1A1A 50%, #FF6B35 100%);
             min-height: 100vh;
             color: #ffffff;
-            overflow-x: hidden;
         }
 
         .container {
@@ -29,22 +28,13 @@
         .header {
             text-align: center;
             margin-bottom: 40px;
-            animation: fadeInDown 1s ease-out;
         }
 
         .header h1 {
-            font-size: 3.5rem;
+            font-size: 3rem;
             font-weight: 700;
             margin-bottom: 10px;
-            background: linear-gradient(45deg, #FF6B35, #FFA500, #FF8C42);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
+            color: #FF6B35;
         }
 
         .update-status {
@@ -65,17 +55,10 @@
 
         .card {
             background: rgba(26, 26, 26, 0.85);
-            backdrop-filter: blur(20px);
             border-radius: 20px;
             border: 1px solid rgba(255, 107, 53, 0.3);
             padding: 25px;
             box-shadow: 0 8px 32px rgba(255, 107, 53, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(255, 107, 53, 0.4);
         }
 
         .card h3 {
@@ -88,104 +71,131 @@
             grid-column: 1 / -1;
         }
 
-        .filters {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
         }
 
-        .filter-group {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            padding: 8px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 107, 53, 0.2);
         }
 
-        .filter-btn {
+        th {
+            background: rgba(255, 107, 53, 0.2);
+            color: #FF6B35;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        th:hover {
+            background: rgba(255, 107, 53, 0.3);
+        }
+
+        .btn {
             padding: 8px 16px;
             background: rgba(26, 26, 26, 0.7);
             border: 1px solid rgba(255, 107, 53, 0.3);
             border-radius: 20px;
             color: white;
             cursor: pointer;
+            margin: 2px;
+        }
+
+        .btn:hover {
+            background: rgba(255, 107, 53, 0.5);
+        }
+
+        .btn.active {
+            background: #FF6B35;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 15px;
             font-size: 0.85rem;
-        }
-
-        .filter-btn.active {
-            background: linear-gradient(45deg, #FF6B35, #FF8C42);
-            border-color: #FF6B35;
-        }
-
-        .opportunity-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        .opportunity-table th,
-        .opportunity-table td {
-            padding: 10px 8px;
-            text-align: left;
-            border-bottom: 1px solid rgba(255, 107, 53, 0.2);
-        }
-
-        .opportunity-table th {
-            background: rgba(255, 107, 53, 0.2);
             font-weight: 600;
-            color: #FF6B35;
-            cursor: pointer;
+            display: inline-block;
         }
 
         .yield-badge {
-            background: linear-gradient(45deg, #FF6B35, #FF8C42);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-
-        .risk-badge {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            background: #FF6B35;
             color: white;
         }
 
-        .risk-low { background: #10b981; }
-        .risk-medium { background: #FF8C42; }
-        .risk-high { background: #ef4444; }
-
-        .chain-badge {
-            padding: 3px 8px;
-            border-radius: 10px;
-            font-size: 0.75rem;
-            font-weight: 500;
+        .risk-low {
+            background: #10b981;
+            color: white;
         }
 
-        .ethereum { background: #627EEA; color: white; }
-        .optimism { background: #dc2626; color: white; }
-        .arbitrum { background: #2563eb; color: white; }
-        .base { background: #0052ff; color: white; }
-        .polygon { background: #8247e5; color: white; }
+        .risk-medium {
+            background: #FF8C42;
+            color: white;
+        }
 
-        .chart-container {
-            position: relative;
-            height: 250px;
+        .risk-high {
+            background: #ef4444;
+            color: white;
+        }
+
+        .chain-ethereum {
+            background: #627EEA;
+            color: white;
+        }
+
+        .chain-optimism {
+            background: #dc2626;
+            color: white;
+        }
+
+        .chain-arbitrum {
+            background: #2563eb;
+            color: white;
+        }
+
+        .chain-base {
+            background: #0052ff;
+            color: white;
+        }
+
+        .chain-polygon {
+            background: #8247e5;
+            color: white;
+        }
+
+        .link {
+            color: #FF6B35;
+            text-decoration: none;
+        }
+
+        .link:hover {
+            color: #FFA500;
+            text-decoration: underline;
+        }
+
+        .filters {
+            margin-bottom: 15px;
+        }
+
+        .filter-group {
+            display: inline-block;
+            margin-right: 20px;
             margin-bottom: 10px;
         }
 
-        .metric-card {
-            background: linear-gradient(135deg, rgba(255, 107, 53, 0.2), rgba(255, 140, 66, 0.2));
+        .chart-container {
+            height: 250px;
+            position: relative;
+        }
+
+        .metric {
+            background: rgba(255, 107, 53, 0.2);
             padding: 15px;
-            border-radius: 15px;
+            border-radius: 10px;
             text-align: center;
-            margin: 8px 0;
-            border: 1px solid rgba(255, 107, 53, 0.3);
+            margin: 10px 0;
         }
 
         .metric-value {
@@ -197,12 +207,7 @@
         .metric-label {
             font-size: 0.85rem;
             opacity: 0.8;
-            margin-top: 4px;
-        }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-50px); }
-            to { opacity: 1; transform: translateY(0); }
+            margin-top: 5px;
         }
 
         @media (max-width: 768px) {
@@ -212,268 +217,190 @@
             .header h1 {
                 font-size: 2rem;
             }
+            table {
+                font-size: 0.8rem;
+            }
+            th, td {
+                padding: 5px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚀 RocketYield Analytics</h1>
+            <h1>RocketYield Analytics</h1>
             <p>Real-time DeFi opportunities for Rocket Pool rETH holders</p>
             <div class="update-status">
-                <span id="statusText">Loading dashboard...</span>
+                <span id="status">Loading data...</span>
+                <button class="btn" onclick="refreshData()" style="margin-left: 15px;">Refresh</button>
             </div>
         </div>
 
         <div class="dashboard">
-            <!-- Top Opportunities -->
             <div class="card full-width">
-                <h3>🏆 Top Opportunities</h3>
+                <h3>Top Opportunities</h3>
                 <div class="filters">
                     <div class="filter-group">
-                        <span>Risk:</span>
-                        <button class="filter-btn active" onclick="filterByRisk('all')">All</button>
-                        <button class="filter-btn" onclick="filterByRisk('low')">Low</button>
-                        <button class="filter-btn" onclick="filterByRisk('medium')">Medium</button>
-                        <button class="filter-btn" onclick="filterByRisk('high')">High</button>
+                        <span>Risk: </span>
+                        <button class="btn active" id="risk-all" onclick="filterRisk('all')">All</button>
+                        <button class="btn" id="risk-low" onclick="filterRisk('low')">Low</button>
+                        <button class="btn" id="risk-medium" onclick="filterRisk('medium')">Medium</button>
+                        <button class="btn" id="risk-high" onclick="filterRisk('high')">High</button>
                     </div>
                     <div class="filter-group">
-                        <span>Chain:</span>
-                        <button class="filter-btn active" onclick="filterByChain('all')">All</button>
-                        <button class="filter-btn" onclick="filterByChain('ethereum')">Ethereum</button>
-                        <button class="filter-btn" onclick="filterByChain('optimism')">Optimism</button>
-                        <button class="filter-btn" onclick="filterByChain('arbitrum')">Arbitrum</button>
-                        <button class="filter-btn" onclick="filterByChain('base')">Base</button>
-                        <button class="filter-btn" onclick="filterByChain('polygon')">Polygon</button>
+                        <span>Chain: </span>
+                        <button class="btn active" id="chain-all" onclick="filterChain('all')">All</button>
+                        <button class="btn" id="chain-ethereum" onclick="filterChain('ethereum')">Ethereum</button>
+                        <button class="btn" id="chain-optimism" onclick="filterChain('optimism')">Optimism</button>
+                        <button class="btn" id="chain-arbitrum" onclick="filterChain('arbitrum')">Arbitrum</button>
+                        <button class="btn" id="chain-base" onclick="filterChain('base')">Base</button>
+                        <button class="btn" id="chain-polygon" onclick="filterChain('polygon')">Polygon</button>
                     </div>
                 </div>
-                <table class="opportunity-table">
-                    <thead>
-                        <tr>
-                            <th onclick="sortTable('name')">Strategy</th>
-                            <th onclick="sortTable('apr')">APR</th>
-                            <th onclick="sortTable('risk')">Risk</th>
-                            <th onclick="sortTable('tvl')">TVL</th>
-                            <th onclick="sortTable('chain')">Chain</th>
-                        </tr>
-                    </thead>
-                    <tbody id="opportunityTableBody">
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Risk vs Reward -->
-            <div class="card">
-                <h3>📊 Risk vs Reward Analysis</h3>
-                <div class="chart-container">
-                    <canvas id="riskRewardChart"></canvas>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th onclick="sortData('name')">Strategy</th>
+                                <th onclick="sortData('apr')">APR</th>
+                                <th onclick="sortData('risk')">Risk</th>
+                                <th onclick="sortData('tvl')">TVL</th>
+                                <th onclick="sortData('chain')">Chain</th>
+                                <th onclick="sortData('updated')">Last Updated</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataTable"></tbody>
+                    </table>
                 </div>
             </div>
 
-            <!-- Portfolio Metrics -->
             <div class="card">
-                <h3>⚖️ Portfolio Metrics</h3>
-                <div class="metric-card">
-                    <div class="metric-value" id="avgAPR">--%</div>
+                <h3>Risk vs Reward</h3>
+                <div class="chart-container">
+                    <canvas id="riskChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Portfolio Metrics</h3>
+                <div class="metric">
+                    <div class="metric-value" id="avgApr">0%</div>
                     <div class="metric-label">Average APR</div>
                 </div>
-                <div class="metric-card">
-                    <div class="metric-value" id="avgRisk">--</div>
+                <div class="metric">
+                    <div class="metric-value" id="avgRisk">0</div>
                     <div class="metric-label">Average Risk</div>
                 </div>
-                <div class="metric-card">
-                    <div class="metric-value" id="totalTVL">--</div>
+                <div class="metric">
+                    <div class="metric-value" id="totalTvl">$0</div>
                     <div class="metric-label">Total TVL</div>
                 </div>
             </div>
 
-            <!-- Yield by Chain -->
             <div class="card full-width">
-                <h3>📈 Yield Distribution by Chain</h3>
+                <h3>Yield by Chain</h3>
                 <div class="chart-container">
-                    <canvas id="yieldChart"></canvas>
+                    <canvas id="chainChart"></canvas>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Data
-        var opportunities = [
-            { name: "Hold rETH", apr: 2.89, risk: 2, chain: "ethereum", tvl: 2500000000 },
-            { name: "Balancer rETH/WETH + Aura", apr: 4.25, risk: 4, chain: "ethereum", tvl: 45000000 },
-            { name: "Gamma rETH/WETH", apr: 5.80, risk: 4, chain: "ethereum", tvl: 12000000 },
-            { name: "Curve rETH/ETH", apr: 3.45, risk: 4, chain: "ethereum", tvl: 85000000 },
-            { name: "Balancer wstETH/rETH/sfrxETH", apr: 6.20, risk: 6, chain: "ethereum", tvl: 28000000 },
-            { name: "BeethovenX rETH/WETH", apr: 3.80, risk: 5, chain: "optimism", tvl: 8500000 },
-            { name: "Balancer rETH/WETH (Arbitrum)", apr: 3.15, risk: 5, chain: "arbitrum", tvl: 15000000 },
-            { name: "Balancer rETH/WETH (Base)", apr: 4.10, risk: 5, chain: "base", tvl: 6000000 },
-            { name: "Aave v3 rETH Supply", apr: 1.91, risk: 3, chain: "ethereum", tvl: 125000000 },
-            { name: "Balancer rETH/weETH", apr: 4.85, risk: 6, chain: "ethereum", tvl: 18000000 },
-            { name: "Velodrome rETH/WETH", apr: 5.20, risk: 5, chain: "optimism", tvl: 22000000 },
-            { name: "Camelot rETH/WETH", apr: 4.65, risk: 5, chain: "arbitrum", tvl: 9500000 },
-            { name: "Aerodrome rETH/WETH", apr: 4.90, risk: 5, chain: "base", tvl: 11000000 },
-            { name: "QuickSwap rETH/WETH", apr: 3.25, risk: 5, chain: "polygon", tvl: 4500000 },
-            { name: "SushiSwap rETH/WETH", apr: 2.85, risk: 4, chain: "ethereum", tvl: 7800000 }
-        ];
-
-        var filteredData = opportunities.slice();
-        var currentRiskFilter = 'all';
-        var currentChainFilter = 'all';
-        var currentSort = { key: 'apr', direction: 'desc' };
+        // Data storage
+        var data = [];
+        var filtered = [];
+        var sortKey = 'apr';
+        var sortDir = 'desc';
+        var riskFilter = 'all';
+        var chainFilter = 'all';
         var charts = {};
 
-        // Initialize
-        function init() {
-            console.log('Initializing RocketYield Dashboard...');
-            updateTable();
-            updateMetrics();
-            initCharts();
-            document.getElementById('statusText').textContent = 'Dashboard Ready';
-            console.log('Dashboard initialized successfully');
+        // Protocol URLs
+        var urls = {
+            'Hold rETH': 'https://rocketpool.net',
+            'Balancer rETH/WETH + Aura': 'https://app.balancer.fi',
+            'Gamma rETH/WETH': 'https://app.gamma.xyz',
+            'Curve rETH/ETH': 'https://curve.fi',
+            'Balancer wstETH/rETH/sfrxETH': 'https://app.balancer.fi',
+            'BeethovenX rETH/WETH': 'https://beets.fi',
+            'Balancer rETH/WETH (Arbitrum)': 'https://app.balancer.fi',
+            'Balancer rETH/WETH (Base)': 'https://app.balancer.fi',
+            'Aave v3 rETH Supply': 'https://app.aave.com',
+            'Balancer rETH/weETH': 'https://app.balancer.fi',
+            'Velodrome rETH/WETH': 'https://app.velodrome.finance',
+            'Camelot rETH/WETH': 'https://app.camelot.exchange',
+            'Aerodrome rETH/WETH': 'https://aerodrome.finance',
+            'QuickSwap rETH/WETH': 'https://quickswap.exchange',
+            'SushiSwap rETH/WETH': 'https://www.sushi.com'
+        };
+
+        // Initialize data
+        function initData() {
+            data = [
+                {name: 'Hold rETH', apr: 2.89, risk: 2, chain: 'ethereum', tvl: 2500000000, updated: new Date()},
+                {name: 'Balancer rETH/WETH + Aura', apr: 4.25, risk: 4, chain: 'ethereum', tvl: 45000000, updated: new Date()},
+                {name: 'Gamma rETH/WETH', apr: 5.80, risk: 4, chain: 'ethereum', tvl: 12000000, updated: new Date()},
+                {name: 'Curve rETH/ETH', apr: 3.45, risk: 4, chain: 'ethereum', tvl: 85000000, updated: new Date()},
+                {name: 'Balancer wstETH/rETH/sfrxETH', apr: 6.20, risk: 6, chain: 'ethereum', tvl: 28000000, updated: new Date()},
+                {name: 'BeethovenX rETH/WETH', apr: 3.80, risk: 5, chain: 'optimism', tvl: 8500000, updated: new Date()},
+                {name: 'Balancer rETH/WETH (Arbitrum)', apr: 3.15, risk: 5, chain: 'arbitrum', tvl: 15000000, updated: new Date()},
+                {name: 'Balancer rETH/WETH (Base)', apr: 4.10, risk: 5, chain: 'base', tvl: 6000000, updated: new Date()},
+                {name: 'Aave v3 rETH Supply', apr: 1.91, risk: 3, chain: 'ethereum', tvl: 125000000, updated: new Date()},
+                {name: 'Balancer rETH/weETH', apr: 4.85, risk: 6, chain: 'ethereum', tvl: 18000000, updated: new Date()},
+                {name: 'Velodrome rETH/WETH', apr: 5.20, risk: 5, chain: 'optimism', tvl: 22000000, updated: new Date()},
+                {name: 'Camelot rETH/WETH', apr: 4.65, risk: 5, chain: 'arbitrum', tvl: 9500000, updated: new Date()},
+                {name: 'Aerodrome rETH/WETH', apr: 4.90, risk: 5, chain: 'base', tvl: 11000000, updated: new Date()},
+                {name: 'QuickSwap rETH/WETH', apr: 3.25, risk: 5, chain: 'polygon', tvl: 4500000, updated: new Date()},
+                {name: 'SushiSwap rETH/WETH', apr: 2.85, risk: 4, chain: 'ethereum', tvl: 7800000, updated: new Date()}
+            ];
+
+            // Set random update times
+            for (var i = 0; i < data.length; i++) {
+                var hoursAgo = Math.floor(Math.random() * 24);
+                var d = new Date();
+                d.setHours(d.getHours() - hoursAgo);
+                data[i].updated = d;
+            }
+
+            filtered = data.slice();
         }
 
-        // Update table
-        function updateTable() {
-            var tbody = document.getElementById('opportunityTableBody');
+        // Render table
+        function renderTable() {
+            var tbody = document.getElementById('dataTable');
             var html = '';
             
-            for (var i = 0; i < filteredData.length; i++) {
-                var op = filteredData[i];
-                var riskClass = op.risk <= 3 ? 'risk-low' : op.risk <= 6 ? 'risk-medium' : 'risk-high';
+            for (var i = 0; i < filtered.length; i++) {
+                var item = filtered[i];
+                var riskClass = item.risk <= 3 ? 'risk-low' : item.risk <= 6 ? 'risk-medium' : 'risk-high';
+                var url = urls[item.name] || '#';
+                
                 html += '<tr>';
-                html += '<td>' + op.name + '</td>';
-                html += '<td><span class="yield-badge">' + op.apr.toFixed(2) + '%</span></td>';
-                html += '<td><span class="risk-badge ' + riskClass + '">' + op.risk + '/10</span></td>';
-                html += '<td>$' + formatNumber(op.tvl) + '</td>';
-                html += '<td><span class="chain-badge ' + op.chain + '">' + getChainName(op.chain) + '</span></td>';
+                html += '<td><a href="' + url + '" target="_blank" class="link">' + item.name + '</a></td>';
+                html += '<td><span class="badge yield-badge">' + item.apr.toFixed(2) + '%</span></td>';
+                html += '<td><span class="badge ' + riskClass + '">' + item.risk + '/10</span></td>';
+                html += '<td>' + formatTVL(item.tvl) + '</td>';
+                html += '<td><span class="badge chain-' + item.chain + '">' + formatChain(item.chain) + '</span></td>';
+                html += '<td>' + formatTime(item.updated) + '</td>';
                 html += '</tr>';
             }
             
             tbody.innerHTML = html;
-        }
-
-        // Update metrics
-        function updateMetrics() {
-            var totalAPR = 0;
-            var totalRisk = 0;
-            var totalTVL = 0;
-            
-            for (var i = 0; i < filteredData.length; i++) {
-                totalAPR += filteredData[i].apr;
-                totalRisk += filteredData[i].risk;
-                totalTVL += filteredData[i].tvl;
-            }
-            
-            var count = filteredData.length || 1;
-            document.getElementById('avgAPR').textContent = (totalAPR / count).toFixed(2) + '%';
-            document.getElementById('avgRisk').textContent = (totalRisk / count).toFixed(1);
-            document.getElementById('totalTVL').textContent = '$' + formatNumber(totalTVL);
-        }
-
-        // Filter by risk
-        function filterByRisk(risk) {
-            currentRiskFilter = risk;
-            applyFilters();
-            
-            // Update active button
-            var buttons = document.querySelectorAll('.filter-group button');
-            for (var i = 0; i < buttons.length; i++) {
-                if (buttons[i].onclick && buttons[i].onclick.toString().includes('filterByRisk')) {
-                    buttons[i].classList.remove('active');
-                    if (buttons[i].onclick.toString().includes(risk)) {
-                        buttons[i].classList.add('active');
-                    }
-                }
-            }
-        }
-
-        // Filter by chain
-        function filterByChain(chain) {
-            currentChainFilter = chain;
-            applyFilters();
-            
-            // Update active button
-            var buttons = document.querySelectorAll('.filter-group button');
-            for (var i = 0; i < buttons.length; i++) {
-                if (buttons[i].onclick && buttons[i].onclick.toString().includes('filterByChain')) {
-                    buttons[i].classList.remove('active');
-                    if (buttons[i].onclick.toString().includes(chain)) {
-                        buttons[i].classList.add('active');
-                    }
-                }
-            }
-        }
-
-        // Apply filters
-        function applyFilters() {
-            filteredData = [];
-            
-            for (var i = 0; i < opportunities.length; i++) {
-                var op = opportunities[i];
-                var includeRisk = true;
-                var includeChain = true;
-                
-                if (currentRiskFilter !== 'all') {
-                    if (currentRiskFilter === 'low' && op.risk > 3) includeRisk = false;
-                    if (currentRiskFilter === 'medium' && (op.risk < 4 || op.risk > 6)) includeRisk = false;
-                    if (currentRiskFilter === 'high' && op.risk < 7) includeRisk = false;
-                }
-                
-                if (currentChainFilter !== 'all' && op.chain !== currentChainFilter) {
-                    includeChain = false;
-                }
-                
-                if (includeRisk && includeChain) {
-                    filteredData.push(op);
-                }
-            }
-            
-            // Apply current sort
-            sortTable(currentSort.key);
-            updateTable();
             updateMetrics();
-            updateCharts();
         }
 
-        // Sort table
-        function sortTable(key) {
-            if (currentSort.key === key) {
-                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
-            } else {
-                currentSort.key = key;
-                currentSort.direction = 'desc';
-            }
-            
-            filteredData.sort(function(a, b) {
-                var aVal = a[key];
-                var bVal = b[key];
-                
-                if (typeof aVal === 'string') {
-                    aVal = aVal.toLowerCase();
-                    bVal = bVal.toLowerCase();
-                }
-                
-                if (currentSort.direction === 'asc') {
-                    return aVal > bVal ? 1 : -1;
-                } else {
-                    return aVal < bVal ? 1 : -1;
-                }
-            });
-            
-            updateTable();
+        // Format TVL
+        function formatTVL(tvl) {
+            if (tvl >= 1e9) return '$' + (tvl / 1e9).toFixed(1) + 'B';
+            if (tvl >= 1e6) return '$' + (tvl / 1e6).toFixed(1) + 'M';
+            if (tvl >= 1e3) return '$' + (tvl / 1e3).toFixed(1) + 'K';
+            return '$' + tvl;
         }
 
-        // Format number
-        function formatNumber(num) {
-            if (num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
-            if (num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
-            if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
-            return num.toString();
-        }
-
-        // Get chain name
-        function getChainName(chain) {
+        // Format chain name
+        function formatChain(chain) {
             var names = {
                 ethereum: 'Ethereum',
                 optimism: 'Optimism',
@@ -484,21 +411,140 @@
             return names[chain] || chain;
         }
 
+        // Format time
+        function formatTime(date) {
+            var now = new Date();
+            var diff = now - date;
+            var hours = Math.floor(diff / 3600000);
+            
+            if (hours < 1) return 'Just now';
+            if (hours < 24) return hours + 'h ago';
+            return Math.floor(hours / 24) + 'd ago';
+        }
+
+        // Update metrics
+        function updateMetrics() {
+            var totalApr = 0;
+            var totalRisk = 0;
+            var totalTvl = 0;
+            
+            for (var i = 0; i < filtered.length; i++) {
+                totalApr += filtered[i].apr;
+                totalRisk += filtered[i].risk;
+                totalTvl += filtered[i].tvl;
+            }
+            
+            var count = filtered.length || 1;
+            document.getElementById('avgApr').textContent = (totalApr / count).toFixed(2) + '%';
+            document.getElementById('avgRisk').textContent = (totalRisk / count).toFixed(1);
+            document.getElementById('totalTvl').textContent = formatTVL(totalTvl);
+        }
+
+        // Sort data
+        function sortData(key) {
+            if (sortKey === key) {
+                sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortKey = key;
+                sortDir = 'desc';
+            }
+            
+            filtered.sort(function(a, b) {
+                var aVal = key === 'updated' ? a[key].getTime() : a[key];
+                var bVal = key === 'updated' ? b[key].getTime() : b[key];
+                
+                if (typeof aVal === 'string') {
+                    aVal = aVal.toLowerCase();
+                    bVal = bVal.toLowerCase();
+                }
+                
+                if (sortDir === 'asc') {
+                    return aVal > bVal ? 1 : -1;
+                } else {
+                    return aVal < bVal ? 1 : -1;
+                }
+            });
+            
+            renderTable();
+        }
+
+        // Filter by risk
+        function filterRisk(level) {
+            riskFilter = level;
+            document.querySelectorAll('[id^="risk-"]').forEach(function(btn) {
+                btn.classList.remove('active');
+            });
+            document.getElementById('risk-' + level).classList.add('active');
+            applyFilters();
+        }
+
+        // Filter by chain
+        function filterChain(chain) {
+            chainFilter = chain;
+            document.querySelectorAll('[id^="chain-"]').forEach(function(btn) {
+                btn.classList.remove('active');
+            });
+            document.getElementById('chain-' + chain).classList.add('active');
+            applyFilters();
+        }
+
+        // Apply filters
+        function applyFilters() {
+            filtered = data.filter(function(item) {
+                var riskMatch = true;
+                var chainMatch = true;
+                
+                if (riskFilter !== 'all') {
+                    if (riskFilter === 'low') riskMatch = item.risk <= 3;
+                    if (riskFilter === 'medium') riskMatch = item.risk >= 4 && item.risk <= 6;
+                    if (riskFilter === 'high') riskMatch = item.risk >= 7;
+                }
+                
+                if (chainFilter !== 'all') {
+                    chainMatch = item.chain === chainFilter;
+                }
+                
+                return riskMatch && chainMatch;
+            });
+            
+            sortData(sortKey);
+            updateCharts();
+        }
+
+        // Refresh data
+        function refreshData() {
+            document.getElementById('status').textContent = 'Refreshing...';
+            
+            // Simulate data update
+            for (var i = 0; i < 3; i++) {
+                var idx = Math.floor(Math.random() * data.length);
+                data[idx].apr = Math.max(0.5, data[idx].apr + (Math.random() - 0.5) * 0.5);
+                data[idx].tvl = data[idx].tvl * (1 + (Math.random() - 0.5) * 0.1);
+                data[idx].updated = new Date();
+            }
+            
+            setTimeout(function() {
+                applyFilters();
+                document.getElementById('status').textContent = 'Data updated';
+                setTimeout(function() {
+                    document.getElementById('status').textContent = 'Live data active';
+                }, 2000);
+            }, 500);
+        }
+
         // Initialize charts
         function initCharts() {
-            // Risk vs Reward Chart
-            var ctx1 = document.getElementById('riskRewardChart');
-            if (ctx1 && typeof Chart !== 'undefined') {
-                charts.riskReward = new Chart(ctx1, {
+            // Risk vs Reward
+            var ctx1 = document.getElementById('riskChart');
+            if (ctx1 && window.Chart) {
+                charts.risk = new Chart(ctx1, {
                     type: 'scatter',
                     data: {
                         datasets: [{
                             label: 'Opportunities',
-                            data: filteredData.map(function(op) {
-                                return { x: op.risk, y: op.apr };
-                            }),
+                            data: [],
                             backgroundColor: 'rgba(255, 107, 53, 0.6)',
-                            borderColor: 'rgba(255, 107, 53, 1)',
+                            borderColor: '#FF6B35',
                             borderWidth: 2,
                             pointRadius: 8
                         }]
@@ -506,107 +552,102 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        scales: {
-                            x: {
-                                title: { display: true, text: 'Risk Score', color: '#fff' },
-                                ticks: { color: '#fff' },
-                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                            },
-                            y: {
-                                title: { display: true, text: 'APR (%)', color: '#fff' },
-                                ticks: { color: '#fff' },
-                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                            }
-                        },
                         plugins: {
                             legend: { display: false }
+                        },
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'Risk Score' },
+                                ticks: { color: '#ccc' },
+                                grid: { color: 'rgba(255,255,255,0.1)' }
+                            },
+                            y: {
+                                title: { display: true, text: 'APR (%)' },
+                                ticks: { color: '#ccc' },
+                                grid: { color: 'rgba(255,255,255,0.1)' }
+                            }
                         }
                     }
                 });
             }
 
-            // Yield by Chain Chart
-            var ctx2 = document.getElementById('yieldChart');
-            if (ctx2 && typeof Chart !== 'undefined') {
-                var chainData = getChainData();
-                charts.yield = new Chart(ctx2, {
+            // Chain yields
+            var ctx2 = document.getElementById('chainChart');
+            if (ctx2 && window.Chart) {
+                charts.chain = new Chart(ctx2, {
                     type: 'bar',
                     data: {
-                        labels: Object.keys(chainData),
+                        labels: [],
                         datasets: [{
                             label: 'Average APR',
-                            data: Object.values(chainData),
-                            backgroundColor: [
-                                '#627EEA', '#dc2626', '#2563eb', '#0052ff', '#8247e5'
-                            ],
-                            borderColor: 'rgba(255, 255, 255, 0.2)',
-                            borderWidth: 2
+                            data: [],
+                            backgroundColor: ['#627EEA', '#dc2626', '#2563eb', '#0052ff', '#8247e5']
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                ticks: { color: '#fff' },
-                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                            },
-                            x: {
-                                ticks: { color: '#fff' },
-                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                            }
-                        },
                         plugins: {
                             legend: { display: false }
+                        },
+                        scales: {
+                            x: {
+                                ticks: { color: '#ccc' },
+                                grid: { color: 'rgba(255,255,255,0.1)' }
+                            },
+                            y: {
+                                ticks: { color: '#ccc' },
+                                grid: { color: 'rgba(255,255,255,0.1)' }
+                            }
                         }
                     }
                 });
             }
+
+            updateCharts();
         }
 
         // Update charts
         function updateCharts() {
-            if (charts.riskReward) {
-                charts.riskReward.data.datasets[0].data = filteredData.map(function(op) {
-                    return { x: op.risk, y: op.apr };
+            if (charts.risk) {
+                charts.risk.data.datasets[0].data = filtered.map(function(item) {
+                    return { x: item.risk, y: item.apr };
                 });
-                charts.riskReward.update();
+                charts.risk.update();
             }
 
-            if (charts.yield) {
-                var chainData = getChainData();
-                charts.yield.data.labels = Object.keys(chainData);
-                charts.yield.data.datasets[0].data = Object.values(chainData);
-                charts.yield.update();
-            }
-        }
+            if (charts.chain) {
+                var chainData = {};
+                filtered.forEach(function(item) {
+                    if (!chainData[item.chain]) {
+                        chainData[item.chain] = { total: 0, count: 0 };
+                    }
+                    chainData[item.chain].total += item.apr;
+                    chainData[item.chain].count++;
+                });
 
-        // Get chain data
-        function getChainData() {
-            var chains = {};
-            var counts = {};
-            
-            for (var i = 0; i < filteredData.length; i++) {
-                var op = filteredData[i];
-                var chainName = getChainName(op.chain);
-                if (!chains[chainName]) {
-                    chains[chainName] = 0;
-                    counts[chainName] = 0;
+                var labels = [];
+                var values = [];
+                for (var chain in chainData) {
+                    labels.push(formatChain(chain));
+                    values.push(chainData[chain].total / chainData[chain].count);
                 }
-                chains[chainName] += op.apr;
-                counts[chainName]++;
+
+                charts.chain.data.labels = labels;
+                charts.chain.data.datasets[0].data = values;
+                charts.chain.update();
             }
-            
-            for (var chain in chains) {
-                chains[chain] = chains[chain] / counts[chain];
-            }
-            
-            return chains;
         }
 
-        // Start the dashboard
+        // Initialize on load
         window.onload = function() {
-            init();
+            initData();
+            renderTable();
+            initCharts();
+            document.getElementById('status').textContent = 'Live data active';
+            
+            // Auto-refresh every 5 minutes
+            setInterval(refreshData, 300000);
         };
     </script>
 </body>
