@@ -80,24 +80,24 @@
         th, td {
             padding: 10px;
             text-align: left;
-            border-bottom: 1px solid rgba(255, 107, 53, 0.2);
+            border-bottom: 1px solid rgba(255, 154, 118, 0.2);
         }
 
         th {
-            background: rgba(255, 107, 53, 0.2);
-            color: #FF6B35;
+            background: rgba(255, 154, 118, 0.2);
+            color: #FFB088;
             cursor: pointer;
             font-weight: 600;
         }
 
         th:hover {
-            background: rgba(255, 107, 53, 0.3);
+            background: rgba(255, 176, 136, 0.3);
         }
 
         .btn {
             padding: 8px 16px;
             background: rgba(26, 26, 26, 0.7);
-            border: 1px solid rgba(255, 107, 53, 0.3);
+            border: 1px solid rgba(255, 154, 118, 0.3);
             border-radius: 20px;
             color: white;
             cursor: pointer;
@@ -105,11 +105,13 @@
         }
 
         .btn:hover {
-            background: rgba(255, 107, 53, 0.5);
+            background: rgba(255, 154, 118, 0.3);
+            border-color: #FFB088;
         }
 
         .btn.active {
-            background: #FF6B35;
+            background: linear-gradient(45deg, #FF9A76, #FFB088);
+            border-color: #FFB088;
         }
 
         .badge {
@@ -121,7 +123,7 @@
         }
 
         .yield-badge {
-            background: #FF6B35;
+            background: linear-gradient(45deg, #FF9A76, #FFB088);
             color: white;
         }
 
@@ -166,12 +168,13 @@
         }
 
         .link {
-            color: #FF6B35;
+            color: #FFB088;
             text-decoration: none;
+            transition: color 0.3s ease;
         }
 
         .link:hover {
-            color: #FFA500;
+            color: #FFC5A8;
             text-decoration: underline;
         }
 
@@ -191,17 +194,21 @@
         }
 
         .metric {
-            background: rgba(255, 107, 53, 0.2);
+            background: linear-gradient(135deg, rgba(255, 154, 118, 0.15), rgba(255, 176, 136, 0.15));
             padding: 15px;
             border-radius: 10px;
             text-align: center;
             margin: 10px 0;
+            border: 1px solid rgba(255, 154, 118, 0.2);
         }
 
         .metric-value {
             font-size: 1.8rem;
             font-weight: 700;
-            color: #FF6B35;
+            background: linear-gradient(45deg, #FF9A76, #FFB088);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .metric-label {
@@ -233,8 +240,11 @@
             <p>Real-time DeFi opportunities for Rocket Pool rETH holders</p>
             <div class="update-status">
                 <span id="status">Loading data...</span>
-                <button class="btn" onclick="refreshData()" style="margin-left: 15px;">Refresh</button>
+                <button class="btn" onclick="refreshData()" style="margin-left: 15px; background: linear-gradient(45deg, #FF9A76, #FFB088); border: none;">Refresh</button>
             </div>
+            <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 10px;">
+                Click on strategy names to visit pools directly • Auto-refreshes every 5 minutes
+            </p>
         </div>
 
         <div class="dashboard">
@@ -317,23 +327,23 @@
         var chainFilter = 'all';
         var charts = {};
 
-        // Protocol URLs
+        // Protocol URLs - Direct links to specific pairs
         var urls = {
             'Hold rETH': 'https://rocketpool.net',
-            'Balancer rETH/WETH + Aura': 'https://app.balancer.fi',
-            'Gamma rETH/WETH': 'https://app.gamma.xyz',
-            'Curve rETH/ETH': 'https://curve.fi',
-            'Balancer wstETH/rETH/sfrxETH': 'https://app.balancer.fi',
-            'BeethovenX rETH/WETH': 'https://beets.fi',
-            'Balancer rETH/WETH (Arbitrum)': 'https://app.balancer.fi',
-            'Balancer rETH/WETH (Base)': 'https://app.balancer.fi',
-            'Aave v3 rETH Supply': 'https://app.aave.com',
-            'Balancer rETH/weETH': 'https://app.balancer.fi',
-            'Velodrome rETH/WETH': 'https://app.velodrome.finance',
-            'Camelot rETH/WETH': 'https://app.camelot.exchange',
-            'Aerodrome rETH/WETH': 'https://aerodrome.finance',
-            'QuickSwap rETH/WETH': 'https://quickswap.exchange',
-            'SushiSwap rETH/WETH': 'https://www.sushi.com'
+            'Balancer rETH/WETH + Aura': 'https://app.balancer.fi/#/ethereum/pool/0x1e19cf2d73a72ef1332c882f20534b6519be0276000200000000000000000112',
+            'Gamma rETH/WETH': 'https://app.gamma.xyz/vault/uni/ethereum/details/reth-weth-500',
+            'Curve rETH/ETH': 'https://curve.fi/#/ethereum/pools/reth/deposit',
+            'Balancer wstETH/rETH/sfrxETH': 'https://app.balancer.fi/#/ethereum/pool/0x42ed016f826165c2e5976fe5bc3df540c5ad0af700000000000000000000058b',
+            'BeethovenX rETH/WETH': 'https://beets.fi/pool/op/0x4fd63966879300cafafbb35d157dc5229278ed2300020000000000000000002b',
+            'Balancer rETH/WETH (Arbitrum)': 'https://app.balancer.fi/#/arbitrum/pool/0xade4a71bb62bec25154cfc7e6ff49a513b491e81000000000000000000000497',
+            'Balancer rETH/WETH (Base)': 'https://app.balancer.fi/#/base/pool/0xc771c1a5905420daec317b154eb13e4198ba97d0000000000000000000000023',
+            'Aave v3 rETH Supply': 'https://app.aave.com/reserve-overview/?underlyingAsset=0xae78736cd615f374d3085123a210448e74fc6393&marketName=proto_mainnet_v3',
+            'Balancer rETH/weETH': 'https://app.balancer.fi/#/ethereum/pool/0x05ff47afada98a98982113758878f9a8b9fdda0a000000000000000000000645',
+            'Velodrome rETH/WETH': 'https://app.velodrome.finance/liquidity/manage/0x8817b5fb66df31c869eedd567c98c6fc56ddc423',
+            'Camelot rETH/WETH': 'https://app.camelot.exchange/pools/0x9b9c3878f0ce990254ae88b5edffd73103714148',
+            'Aerodrome rETH/WETH': 'https://aerodrome.finance/liquidity/manage/0x3c4fe357ba0da0e231f836de71b0e17527bb5025',
+            'QuickSwap rETH/WETH': 'https://quickswap.exchange/#/pools/v3/0x8ff4c0c15a582544dccda6aa5fbf5f5e5512dc0f',
+            'SushiSwap rETH/WETH': 'https://www.sushi.com/pool/1:0xddadB7dc2932481179Bd1C519f2969e0953D4aE2'
         };
 
         // Initialize data
@@ -513,22 +523,24 @@
 
         // Refresh data
         function refreshData() {
-            document.getElementById('status').textContent = 'Refreshing...';
+            document.getElementById('status').textContent = 'Refreshing data...';
             
             // Simulate data update
             for (var i = 0; i < 3; i++) {
                 var idx = Math.floor(Math.random() * data.length);
                 data[idx].apr = Math.max(0.5, data[idx].apr + (Math.random() - 0.5) * 0.5);
-                data[idx].tvl = data[idx].tvl * (1 + (Math.random() - 0.5) * 0.1);
+                data[idx].apr = Math.round(data[idx].apr * 100) / 100;
+                data[idx].tvl = Math.floor(data[idx].tvl * (1 + (Math.random() - 0.5) * 0.1));
                 data[idx].updated = new Date();
             }
             
             setTimeout(function() {
                 applyFilters();
-                document.getElementById('status').textContent = 'Data updated';
+                var time = new Date().toLocaleTimeString();
+                document.getElementById('status').textContent = 'Last updated: ' + time;
                 setTimeout(function() {
                     document.getElementById('status').textContent = 'Live data active';
-                }, 2000);
+                }, 3000);
             }, 500);
         }
 
@@ -543,28 +555,64 @@
                         datasets: [{
                             label: 'Opportunities',
                             data: [],
-                            backgroundColor: 'rgba(255, 107, 53, 0.6)',
-                            borderColor: '#FF6B35',
+                            backgroundColor: 'rgba(255, 154, 118, 0.7)',
+                            borderColor: '#FFB088',
                             borderWidth: 2,
-                            pointRadius: 8
+                            pointRadius: 8,
+                            pointHoverRadius: 10
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: {
-                            legend: { display: false }
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        var index = context.dataIndex;
+                                        if (index < filtered.length) {
+                                            var item = filtered[index];
+                                            return [
+                                                item.name,
+                                                'APR: ' + item.apr.toFixed(2) + '%',
+                                                'Risk: ' + item.risk + '/10',
+                                                'TVL: ' + formatTVL(item.tvl)
+                                            ];
+                                        }
+                                        return '';
+                                    }
+                                },
+                                backgroundColor: 'rgba(26, 26, 26, 0.9)',
+                                titleColor: '#FFB088',
+                                bodyColor: '#ffffff',
+                                borderColor: '#FFB088',
+                                borderWidth: 1,
+                                padding: 10,
+                                displayColors: false
+                            }
                         },
                         scales: {
                             x: {
-                                title: { display: true, text: 'Risk Score' },
+                                title: { 
+                                    display: true, 
+                                    text: 'Risk Score',
+                                    color: '#FFB088'
+                                },
                                 ticks: { color: '#ccc' },
-                                grid: { color: 'rgba(255,255,255,0.1)' }
+                                grid: { color: 'rgba(255,255,255,0.1)' },
+                                min: 0,
+                                max: 10
                             },
                             y: {
-                                title: { display: true, text: 'APR (%)' },
+                                title: { 
+                                    display: true, 
+                                    text: 'APR (%)',
+                                    color: '#FFB088'
+                                },
                                 ticks: { color: '#ccc' },
-                                grid: { color: 'rgba(255,255,255,0.1)' }
+                                grid: { color: 'rgba(255,255,255,0.1)' },
+                                min: 0
                             }
                         }
                     }
@@ -581,14 +629,41 @@
                         datasets: [{
                             label: 'Average APR',
                             data: [],
-                            backgroundColor: ['#627EEA', '#dc2626', '#2563eb', '#0052ff', '#8247e5']
+                            backgroundColor: [
+                                'rgba(98, 126, 234, 0.8)',
+                                'rgba(220, 38, 38, 0.8)', 
+                                'rgba(37, 99, 235, 0.8)',
+                                'rgba(0, 82, 255, 0.8)',
+                                'rgba(130, 71, 229, 0.8)'
+                            ],
+                            borderColor: [
+                                'rgba(98, 126, 234, 1)',
+                                'rgba(220, 38, 38, 1)',
+                                'rgba(37, 99, 235, 1)',
+                                'rgba(0, 82, 255, 1)',
+                                'rgba(130, 71, 229, 1)'
+                            ],
+                            borderWidth: 2
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: {
-                            legend: { display: false }
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return 'Average APR: ' + context.parsed.y.toFixed(2) + '%';
+                                    }
+                                },
+                                backgroundColor: 'rgba(26, 26, 26, 0.9)',
+                                titleColor: '#FFB088',
+                                bodyColor: '#ffffff',
+                                borderColor: '#FFB088',
+                                borderWidth: 1,
+                                padding: 10
+                            }
                         },
                         scales: {
                             x: {
@@ -596,6 +671,11 @@
                                 grid: { color: 'rgba(255,255,255,0.1)' }
                             },
                             y: {
+                                title: {
+                                    display: true,
+                                    text: 'Average APR (%)',
+                                    color: '#FFB088'
+                                },
                                 ticks: { color: '#ccc' },
                                 grid: { color: 'rgba(255,255,255,0.1)' }
                             }
