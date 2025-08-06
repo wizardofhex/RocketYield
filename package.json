@@ -1,0 +1,23 @@
+{
+  "name": "rocketyield",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wizardofhex/RocketYield.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wizardofhex/RocketYield/issues"
+  },
+  "homepage": "https://github.com/wizardofhex/RocketYield#readme",
+  "devDependencies": {
+    "vercel": "^44.7.3"
+  }
+}
